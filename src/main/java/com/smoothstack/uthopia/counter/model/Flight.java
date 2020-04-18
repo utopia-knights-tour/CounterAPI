@@ -1,6 +1,7 @@
 package com.smoothstack.uthopia.counter.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -46,7 +47,7 @@ public class Flight implements Serializable {
 	private LocalDate arrivalDate;
 	
 	@Column(name = "cost")
-	private Double cost;
+	private BigDecimal cost;
 	
 	@Column(name = "seatsAvailable")
 	private Integer seatsAvailable;
@@ -107,11 +108,11 @@ public class Flight implements Serializable {
 		this.arrivalDate = arrivalDate;
 	}
 
-	public Double getCost() {
+	public BigDecimal getCost() {
 		return cost;
 	}
 
-	public void setCost(Double cost) {
+	public void setCost(BigDecimal cost) {
 		this.cost = cost;
 	}
 
