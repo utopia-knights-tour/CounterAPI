@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.smoothstack.uthopia.counter.exception.InvalidIdException;
 import com.smoothstack.uthopia.counter.model.Customer;
 import com.smoothstack.uthopia.counter.repository.CustomerRepository;
 
@@ -25,12 +26,11 @@ public class CustomerService {
 		return customerRepo.findByCustomerNameStartsWith(customerName != null? customerName: "", pageable);
 	}
 	
-	public Boolean updateCustomer(Customer customer) {
-		if (customerRepo.existsById(customer.getCustomerId())) {
-			customerRepo.save(customer);
-			return true;
+	public void updateCustomer(Customer customer) throws InvalidIdException {
+		if (!customerRepo.existsById(customer.getCustomerId())) {
+			throw new InvalidIdException("That ID is invalid.");
 		}
-		return false;
+		customerRepo.save(customer);
 	}
 
 }

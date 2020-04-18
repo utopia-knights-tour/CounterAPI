@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.validator.constraints.Length;
+
 @Entity
 @Table(name = "Airport")
 public class Airport implements Serializable {
@@ -16,6 +18,7 @@ public class Airport implements Serializable {
 
 	@Id
 	@Column(name = "airportCode")
+	@Length(min = 3, max = 3)
 	private String airportCode;
 	
 	@Column(name = "airportName")

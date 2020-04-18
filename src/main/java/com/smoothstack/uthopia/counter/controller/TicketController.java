@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.smoothstack.uthopia.counter.exception.InvalidIdException;
+import com.smoothstack.uthopia.counter.exception.MissingIdException;
+import com.smoothstack.uthopia.counter.exception.NoSeatsAvailableException;
 import com.smoothstack.uthopia.counter.model.Ticket;
 import com.smoothstack.uthopia.counter.service.TicketService;
 
@@ -27,30 +30,22 @@ public class TicketController {
 	
 	@GetMapping(path = "/tickets")
 	public ResponseEntity<List<Ticket>> readTickets(@RequestParam Integer customerId, @RequestParam Integer page,
-			@RequestParam Integer pageSize) {
+			@RequestParam Integer pageSize) throws InvalidIdException {
 		List<Ticket> tickets = ticketService.readTicketsByCustomer(customerId, page, pageSize);
-		if (tickets != null) {
-			return new ResponseEntity<List<Ticket>>(tickets, HttpStatus.OK);
-		}
-		return new ResponseEntity<List<Ticket>>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<List<Ticket>>(tickets, HttpStatus.OK);
 	}
 	
 	@PostMapping(path = "/tickets")
-	public ResponseEntity<Void> addTicket(@Valid @RequestBody Ticket ticket) {
-		Ticket savedTicket = ticketService.saveTicket(ticket);
-		if (savedTicket == null) {
-			return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-		}
-		return new ResponseEntity<Void>(HttpStatus.CREATED);
+	public ResponseEntity<Void> addTicket(@Valid @RequestBody Ticket ticket)
+			throws MissingIdException, InvalidIdException, NoSeatsAvailableException {
+		ticketService.saveTicket(ticket);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping(path = "/tickets")
-	public ResponseEntity<Void> deleteTicket(@RequestParam Integer ticketId) {
-		Boolean success = ticketService.returnTicket(ticketId);
-		if (success) {
-			return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-		}
-		return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+	public ResponseEntity<Void> deleteTicket(@RequestParam Integer ticketId) throws InvalidIdException {
+		ticketService.returnTicket(ticketId);
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 
 }

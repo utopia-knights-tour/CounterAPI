@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.smoothstack.uthopia.counter.exception.InvalidIdException;
 import com.smoothstack.uthopia.counter.model.Customer;
 import com.smoothstack.uthopia.counter.service.CustomerService;
 
@@ -56,26 +57,14 @@ public class CustomerControllerTest {
 	}
 	
 	@Test
-	public void TestUpdateCustomerSuccess() {
+	public void TestUpdateCustomer() throws InvalidIdException {
 		Customer testCustomer = new Customer();
 		testCustomer.setCustomerName("John Doe");
 		testCustomer.setCustomerPhone("(323) 312-6364");
 		testCustomer.setCustomerAddress("383 Honey Creek Ave. Mentor, OH 44060");
 		testCustomer.setCustomerId(10);
-		when(customerService.updateCustomer(eq(testCustomer))).thenReturn(true);
 		assertEquals(customerController.updateCustomer(testCustomer, testCustomer.getCustomerId()),
 				new ResponseEntity<Void>(HttpStatus.NO_CONTENT));
 	}
 	
-	@Test
-	public void TestUpdateCustomerFailure() {
-		Customer testCustomer = new Customer();
-		testCustomer.setCustomerName("John Doe");
-		testCustomer.setCustomerPhone("(323) 312-6364");
-		testCustomer.setCustomerAddress("383 Honey Creek Ave. Mentor, OH 44060");
-		testCustomer.setCustomerId(10);
-		when(customerService.updateCustomer(eq(testCustomer))).thenReturn(false);
-		assertEquals(customerController.updateCustomer(testCustomer, testCustomer.getCustomerId()),
-				new ResponseEntity<Void>(HttpStatus.NOT_FOUND));
-	}
 }

@@ -1,6 +1,7 @@
 package com.smoothstack.uthopia.counter.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -16,6 +17,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.smoothstack.uthopia.counter.exception.InvalidIdException;
+import com.smoothstack.uthopia.counter.exception.MissingIdException;
+import com.smoothstack.uthopia.counter.exception.NoSeatsAvailableException;
+import com.smoothstack.uthopia.counter.model.Agency;
 import com.smoothstack.uthopia.counter.model.Customer;
 import com.smoothstack.uthopia.counter.model.Flight;
 import com.smoothstack.uthopia.counter.model.Ticket;
@@ -43,7 +48,41 @@ public class TicketServiceTest {
 	}
 	
 	@Test
-	public void testSaveTicketSuccess() {
+	public void testSaveTicketSuccess() throws MissingIdException, InvalidIdException, NoSeatsAvailableException {
+		Ticket testTicket = new Ticket();
+		Flight flight = new Flight();
+		flight.setFlightId(10);
+		flight.setSeatsAvailable(50);
+		Customer customer = new Customer();
+		customer.setCustomerId(10);
+		testTicket.setFlight(flight);
+		testTicket.setCustomer(customer);
+		when(customerRepo.existsById(eq(customer.getCustomerId()))).thenReturn(true);
+		when(flightRepo.existsById(eq(flight.getFlightId()))).thenReturn(true);
+		when(flightRepo.getOne(10)).thenReturn(flight);
+		ticketService.saveTicket(testTicket);
+		verify(ticketRepo, times(1)).save(testTicket);
+		assertEquals(flight.getSeatsAvailable(), 49);
+	}
+	
+	@Test
+	public void testSaveTicketMissingID() {
+		Ticket testTicket = new Ticket();
+		Flight flight = new Flight();
+		flight.setFlightId(10);
+		Customer customer = new Customer();
+		Agency agency = new Agency();
+		agency.setAgencyName("Test Agency");
+		agency.setAgencyAddress("Test Address");
+		agency.setAgencyPhone("Test Phone");
+		testTicket.setFlight(flight);
+		testTicket.setCustomer(customer);
+		MissingIdException ex = assertThrows(MissingIdException.class, () -> ticketService.saveTicket(testTicket));
+		assertEquals(ex.getMessage(), "Missing ID.");
+	}
+	
+	@Test
+	public void testSaveTicketInvalidID() {
 		Ticket testTicket = new Ticket();
 		Flight flight = new Flight();
 		flight.setFlightId(10);
@@ -51,26 +90,30 @@ public class TicketServiceTest {
 		customer.setCustomerId(10);
 		testTicket.setFlight(flight);
 		testTicket.setCustomer(customer);
-		when(customerRepo.existsById(eq(customer.getCustomerId()))).thenReturn(true);
-		when(flightRepo.existsById(eq(flight.getFlightId()))).thenReturn(true);
-		ticketService.saveTicket(testTicket);
-		verify(ticketRepo, times(1)).save(testTicket);
+		when(customerRepo.existsById(eq(customer.getCustomerId()))).thenReturn(false);
+		InvalidIdException ex = assertThrows(InvalidIdException.class, () -> ticketService.saveTicket(testTicket));
+		assertEquals(ex.getMessage(), "That ID is invalid.");
 	}
 	
 	@Test
-	public void testSaveTicketFailure() {
+	public void testSaveTicketNoSeatsAvailable() {
 		Ticket testTicket = new Ticket();
 		Flight flight = new Flight();
 		flight.setFlightId(10);
+		flight.setSeatsAvailable(0);
 		Customer customer = new Customer();
+		customer.setCustomerId(10);
 		testTicket.setFlight(flight);
 		testTicket.setCustomer(customer);
-		ticketService.saveTicket(testTicket);
-		assertEquals(ticketService.saveTicket(testTicket), null);
+		when(customerRepo.existsById(eq(customer.getCustomerId()))).thenReturn(true);
+		when(flightRepo.existsById(eq(flight.getFlightId()))).thenReturn(true);
+		when(flightRepo.getOne(10)).thenReturn(flight);
+		NoSeatsAvailableException ex = assertThrows(NoSeatsAvailableException.class, () -> ticketService.saveTicket(testTicket));
+		assertEquals(ex.getMessage(), "No more tickets available for this flight.");
 	}
 	
 	@Test
-	public void testReadTicketsByCustomerSuccess() {
+	public void testReadTicketsByCustomerSuccess() throws InvalidIdException {
 		Ticket testTicket = new Ticket();
 		testTicket.setTicketId(14);
 		testTicket.setCanceled(false);
@@ -86,19 +129,29 @@ public class TicketServiceTest {
 	@Test
 	public void testReadTicketsByCustomerFailure() {
 		when(customerRepo.existsById(10)).thenReturn(false);
-		assertEquals(ticketService.readTicketsByCustomer(10, 0, 10), null);
+		InvalidIdException ex = assertThrows(InvalidIdException.class, () -> ticketService.readTicketsByCustomer(10, 0, 10));
+		assertEquals(ex.getMessage(), "That ID is invalid.");
 	}
 	
 	@Test
-	public void returnTicketSuccess() {
+	public void returnTicketSuccess() throws InvalidIdException {
+		Ticket ticket = new Ticket();
+		ticket.setTicketId(10);
+		Flight flight = new Flight();
+		flight.setSeatsAvailable(50);
+		ticket.setFlight(flight);
 		when(ticketRepo.existsById(10)).thenReturn(true);
-		assertEquals(ticketService.returnTicket(10), true);
+		when(ticketRepo.getOne(10)).thenReturn(ticket);
+		ticketService.returnTicket(10);
+		assertEquals(ticket.getCanceled(), true);
+		assertEquals(flight.getSeatsAvailable(), 51);
 	}
 	
 	@Test
-	public void returnTicketFailure() {
+	public void returnTicketInvalidID() {
 		when(ticketRepo.existsById(10)).thenReturn(false);
-		assertEquals(ticketService.returnTicket(10), false);
+		InvalidIdException ex = assertThrows(InvalidIdException.class, () -> ticketService.returnTicket(10));
+		assertEquals(ex.getMessage(), "That ID is invalid.");
 	}
 
 }

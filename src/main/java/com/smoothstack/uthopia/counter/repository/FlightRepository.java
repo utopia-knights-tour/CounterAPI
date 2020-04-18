@@ -13,6 +13,6 @@ import com.smoothstack.uthopia.counter.model.Flight;
 public interface FlightRepository extends JpaRepository<Flight, Integer>{
 		
 		@Query(value = "SELECT f FROM Flight f WHERE f.sourceAirport.airportCode = ?1 AND "
-				+ "f.destinationAirport.airportCode = ?2 AND f.departureDate = ?3")
+				+ "f.destinationAirport.airportCode = ?2 AND f.departureDate = ?3 AND f.seatsAvailable > 0")
 		List<Flight> findFlights(String originCode, String destinationCode, LocalDate departureDate);
 }

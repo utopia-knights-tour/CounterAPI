@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.smoothstack.uthopia.counter.exception.InvalidIdException;
 import com.smoothstack.uthopia.counter.model.Airport;
 import com.smoothstack.uthopia.counter.model.Flight;
 import com.smoothstack.uthopia.counter.service.FlightService;
@@ -35,7 +36,7 @@ public class FlightControllerTest {
 	}
 	
 	@Test
-	public void testReadFlights() {
+	public void testReadFlights() throws InvalidIdException {
 		Flight flight = new Flight();
 		Airport source = new Airport();
 		source.setAirportCode("LAX");

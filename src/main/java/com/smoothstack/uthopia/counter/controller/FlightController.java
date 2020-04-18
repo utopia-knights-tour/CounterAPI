@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.smoothstack.uthopia.counter.exception.InvalidIdException;
 import com.smoothstack.uthopia.counter.model.Flight;
 import com.smoothstack.uthopia.counter.service.FlightService;
 
@@ -22,7 +23,7 @@ public class FlightController {
 	
 	@GetMapping(path = "/flights")
 	public ResponseEntity<List<Flight>> readFlights(@RequestParam String originCode, @RequestParam String destinationCode,
-			@RequestParam String departureDate) {
+			@RequestParam String departureDate) throws InvalidIdException {
 		List<Flight> flights = flightService.readFlights(originCode, destinationCode, departureDate);
 		return new ResponseEntity<List<Flight>>(flights, HttpStatus.OK);
 	}
