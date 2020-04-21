@@ -36,10 +36,10 @@ public class TicketController {
 		return new ResponseEntity<List<Ticket>>(tickets, HttpStatus.OK);
 	}
 	
-	@Transactional(rollbackOn = { MissingIdException.class, InvalidIdException.class, NoSeatsAvailableException.class })
+	@Transactional(rollbackOn = { MissingIdException.class, NoSeatsAvailableException.class })
 	@PostMapping(path = "/tickets")
 	public ResponseEntity<Void> addTicket(@Valid @RequestBody Ticket ticket)
-			throws MissingIdException, InvalidIdException, NoSeatsAvailableException {
+			throws MissingIdException, NoSeatsAvailableException {
 		ticketService.saveTicket(ticket);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}

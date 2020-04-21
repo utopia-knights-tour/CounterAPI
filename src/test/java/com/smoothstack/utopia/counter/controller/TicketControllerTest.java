@@ -59,7 +59,7 @@ public class TicketControllerTest {
 	
 
 	@Test
-	public void testAddTicket() throws MissingIdException, InvalidIdException, NoSeatsAvailableException {
+	public void testAddTicket() throws MissingIdException, NoSeatsAvailableException {
 		Ticket testTicket = new Ticket();
 		assertEquals(ticketController.addTicket(testTicket), 
 				new ResponseEntity<Void>(HttpStatus.CREATED));

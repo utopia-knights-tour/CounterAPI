@@ -1,6 +1,7 @@
 package com.smoothstack.utopia.counter.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +13,6 @@ import com.smoothstack.utopia.counter.exception.MissingIdException;
 import com.smoothstack.utopia.counter.exception.NoSeatsAvailableException;
 import com.smoothstack.utopia.counter.model.Flight;
 import com.smoothstack.utopia.counter.model.Ticket;
-import com.smoothstack.utopia.counter.repository.AgencyRepository;
 import com.smoothstack.utopia.counter.repository.CustomerRepository;
 import com.smoothstack.utopia.counter.repository.FlightRepository;
 import com.smoothstack.utopia.counter.repository.TicketRepository;
@@ -29,10 +29,7 @@ public class TicketService {
 	@Autowired
 	private FlightRepository flightRepo;
 
-	@Autowired
-	private AgencyRepository agencyRepo;
-
-	public void saveTicket(Ticket ticket) throws MissingIdException, InvalidIdException, NoSeatsAvailableException {
+	public void saveTicket(Ticket ticket) throws MissingIdException, NoSeatsAvailableException {
 		// Request body validation guarantees Customer and Flight are not null.
 		Integer customerId = ticket.getCustomer().getCustomerId();
 		Integer flightId = ticket.getFlight().getFlightId();
@@ -40,11 +37,6 @@ public class TicketService {
 		if (customerId == null || flightId == null
 				|| ticket.getAgency() != null && ticket.getAgency().getAgencyId() == null) {
 			throw new MissingIdException("Missing ID.");
-		}
-		// Not found.
-		if (!customerRepo.existsById(customerId) || !flightRepo.existsById(flightId)
-				|| (ticket.getAgency() != null && !agencyRepo.existsById(ticket.getAgency().getAgencyId()))) {
-			throw new InvalidIdException("That ID is invalid.");
 		}
 		ticket.setCanceled(false);
 		ticketRepo.save(ticket);
@@ -68,13 +60,13 @@ public class TicketService {
 	}
 
 	public void returnTicket(Integer ticketId) throws InvalidIdException {
+		Optional<Ticket> ticket = ticketRepo.findById(ticketId);
 		// Not found.
-		if (!ticketRepo.existsById(ticketId)) {
+		if (!ticket.isPresent()) {
 			throw new InvalidIdException("That ID is invalid.");
 		}
-		Ticket ticket = ticketRepo.getOne(ticketId);
-		ticket.setCanceled(true);
-		Flight flight = ticket.getFlight();
+		ticket.get().setCanceled(true);
+		Flight flight = ticket.get().getFlight();
 		flight.setSeatsAvailable(flight.getSeatsAvailable() + 1);
 	}
 }

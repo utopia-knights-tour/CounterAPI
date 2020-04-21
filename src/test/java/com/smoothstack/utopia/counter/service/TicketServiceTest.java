@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,7 @@ public class TicketServiceTest {
 	}
 	
 	@Test
-	public void testSaveTicketSuccess() throws MissingIdException, InvalidIdException, NoSeatsAvailableException {
+	public void testSaveTicketSuccess() throws MissingIdException, NoSeatsAvailableException {
 		Ticket testTicket = new Ticket();
 		Flight flight = new Flight();
 		flight.setFlightId(10);
@@ -80,20 +81,6 @@ public class TicketServiceTest {
 		testTicket.setCustomer(customer);
 		MissingIdException ex = assertThrows(MissingIdException.class, () -> ticketService.saveTicket(testTicket));
 		assertEquals(ex.getMessage(), "Missing ID.");
-	}
-	
-	@Test
-	public void testSaveTicketInvalidID() {
-		Ticket testTicket = new Ticket();
-		Flight flight = new Flight();
-		flight.setFlightId(10);
-		Customer customer = new Customer();
-		customer.setCustomerId(10);
-		testTicket.setFlight(flight);
-		testTicket.setCustomer(customer);
-		when(customerRepo.existsById(eq(customer.getCustomerId()))).thenReturn(false);
-		InvalidIdException ex = assertThrows(InvalidIdException.class, () -> ticketService.saveTicket(testTicket));
-		assertEquals(ex.getMessage(), "That ID is invalid.");
 	}
 	
 	@Test
@@ -141,8 +128,8 @@ public class TicketServiceTest {
 		Flight flight = new Flight();
 		flight.setSeatsAvailable(50);
 		ticket.setFlight(flight);
-		when(ticketRepo.existsById(10)).thenReturn(true);
-		when(ticketRepo.getOne(10)).thenReturn(ticket);
+		Optional<Ticket> opt = Optional.ofNullable(ticket);
+		when(ticketRepo.findById(10)).thenReturn(opt);
 		ticketService.returnTicket(10);
 		assertEquals(ticket.getCanceled(), true);
 		assertEquals(flight.getSeatsAvailable(), 51);
@@ -150,7 +137,8 @@ public class TicketServiceTest {
 	
 	@Test
 	public void returnTicketInvalidID() {
-		when(ticketRepo.existsById(10)).thenReturn(false);
+		Optional<Ticket> opt = Optional.ofNullable(null);
+		when(ticketRepo.findById(10)).thenReturn(opt);
 		InvalidIdException ex = assertThrows(InvalidIdException.class, () -> ticketService.returnTicket(10));
 		assertEquals(ex.getMessage(), "That ID is invalid.");
 	}
