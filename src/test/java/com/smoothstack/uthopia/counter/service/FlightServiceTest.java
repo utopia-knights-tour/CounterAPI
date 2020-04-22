@@ -2,6 +2,7 @@ package com.smoothstack.uthopia.counter.service;
 
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
@@ -49,7 +50,7 @@ public class FlightServiceTest {
 		Airport destination = new Airport();
 		destination.setAirportCode("JFK");
 		flight.setDestinationAirport(destination);
-		flight.setCost(100.0);
+		flight.setCost(new BigDecimal("100.0"));
 		flight.setSeatsAvailable(50);
 		flight.setArrivalDate(LocalDate.now());
 		flight.setDepartureDate(LocalDate.now());
