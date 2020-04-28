@@ -47,6 +47,9 @@ public class Ticket implements Serializable {
 	
 	@Column(name = "canceled")
 	private Boolean canceled;
+	
+	@Column(name = "paymentId")
+	private Integer paymentId;
 
 	public Integer getTicketId() {
 		return ticketId;
@@ -88,9 +91,17 @@ public class Ticket implements Serializable {
 		this.canceled = canceled;
 	}
 
+	public Integer getPaymentId() {
+		return paymentId;
+	}
+
+	public void setPaymentId(Integer paymentId) {
+		this.paymentId = paymentId;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(agency, canceled, customer, flight, ticketId);
+		return Objects.hash(agency, canceled, customer, flight, paymentId, ticketId);
 	}
 
 	@Override
@@ -104,7 +115,7 @@ public class Ticket implements Serializable {
 		Ticket other = (Ticket) obj;
 		return Objects.equals(agency, other.agency) && Objects.equals(canceled, other.canceled)
 				&& Objects.equals(customer, other.customer) && Objects.equals(flight, other.flight)
-				&& Objects.equals(ticketId, other.ticketId);
+				&& Objects.equals(paymentId, other.paymentId) && Objects.equals(ticketId, other.ticketId);
 	}
 
 }

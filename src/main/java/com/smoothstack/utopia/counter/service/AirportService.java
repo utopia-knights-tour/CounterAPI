@@ -15,7 +15,7 @@ public class AirportService {
 	private AirportRepository airportRepo;
 	
 	public List<Airport> readAirports() {
-		return airportRepo.findAll();
+		return airportRepo.findByOrderByAirportCode();
 	}
 
 }

@@ -19,7 +19,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.smoothstack.utopia.counter.exception.InvalidIdException;
 import com.smoothstack.utopia.counter.exception.MissingIdException;
-import com.smoothstack.utopia.counter.exception.NoSeatsAvailableException;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -42,7 +41,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.NOT_FOUND);
 	}
 
-	@ExceptionHandler({ NoSeatsAvailableException.class, MissingIdException.class, RollbackException.class,
+	@ExceptionHandler({ MissingIdException.class, RollbackException.class,
 			ConstraintViolationException.class })
 	public ResponseEntity<String> handleBadRequestException(Exception ex) {
 		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);

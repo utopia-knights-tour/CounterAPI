@@ -4,6 +4,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -13,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,13 +40,6 @@ public class CustomerServiceTest {
 	}
 
 	@Test
-	public void testSaveCustomer() {
-		Customer testCustomer = new Customer();
-		customerService.saveCustomer(testCustomer);
-		verify(customerRepo, times(1)).save(testCustomer);
-	}
-
-	@Test
 	public void testReadCustomers() {
 		Customer testCustomer = new Customer();
 		testCustomer.setCustomerName("John Doe");
@@ -50,12 +47,13 @@ public class CustomerServiceTest {
 		testCustomer.setCustomerAddress("383 Honey Creek Ave. Mentor, OH 44060");
 		testCustomer.setCustomerId(12);
 		List<Customer> customers = Collections.singletonList(testCustomer);
-		when(customerRepo.findByCustomerNameStartsWith(eq("John"), any())).thenReturn(customers);
-		assertEquals(customerService.readCustomers("John", 0, 10), customers);
+		Page<Customer> customersPage = new PageImpl<Customer>(customers, PageRequest.of(0, 10), 1);
+		when(customerRepo.findCustomers(any(), eq("John"), eq("383"), eq("(323)"))).thenReturn(customersPage);
+		assertNotNull(customerService.readCustomers("John", "383", "(323)", 0, 10));
 	}
 
 	@Test
-	public void testUpdateCustomerSuccess() {
+	public void testSaveSuccess() {
 		Customer testCustomer = new Customer();
 		testCustomer.setCustomerId(10);
 		when(customerRepo.existsById(10)).thenReturn(true);
@@ -63,6 +61,15 @@ public class CustomerServiceTest {
 		verify(customerRepo, times(1)).save(testCustomer);
 	}
 
+	@Test
+	public void testUpdateCustomerSuccess() throws InvalidIdException {
+		Customer testCustomer = new Customer();
+		testCustomer.setCustomerId(10);
+		when(customerRepo.existsById(10)).thenReturn(true);
+		customerService.updateCustomer(testCustomer);
+		verify(customerRepo, times(1)).save(testCustomer);
+	}
+	
 	@Test
 	public void testUpdateCustomerFailure() {
 		Customer testCustomer = new Customer();

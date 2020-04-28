@@ -36,7 +36,7 @@ public class AirportServiceTest {
 		airport.setAirportLocation("Los Angeles, California");
 		airport.setAirportName("Los Angeles International Airport");
 		List<Airport> airports = Collections.singletonList(airport);
-		when(airportRepo.findAll()).thenReturn(airports);
+		when(airportRepo.findByOrderByAirportCode()).thenReturn(airports);
 		assertEquals(airportService.readAirports(), airports);
 	}
 

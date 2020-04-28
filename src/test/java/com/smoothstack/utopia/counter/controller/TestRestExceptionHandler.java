@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.smoothstack.utopia.counter.controller.RestExceptionHandler;
 import com.smoothstack.utopia.counter.exception.InvalidIdException;
-import com.smoothstack.utopia.counter.exception.NoSeatsAvailableException;
+import com.smoothstack.utopia.counter.exception.MissingIdException;
 
 public class TestRestExceptionHandler {
 	
@@ -34,9 +34,9 @@ public class TestRestExceptionHandler {
 	@Test
 	public void testHandleBadRequestException() {
 		String testMessage = "Test Message.";
-		NoSeatsAvailableException ex = new NoSeatsAvailableException(testMessage);
+		MissingIdException ex = new MissingIdException(testMessage);
 		assertEquals(controllerAdvice.handleBadRequestException(ex),
 				new ResponseEntity<String>(testMessage, HttpStatus.BAD_REQUEST));
 	}
-
+	
 }
