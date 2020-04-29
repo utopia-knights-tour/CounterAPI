@@ -42,7 +42,7 @@ public class TicketControllerTest {
 		testTicket.setTicketId(14);
 		testTicket.setCanceled(false);
 		testTicket.setFlight(new Flight());
-		testTicket.setPaymentId(10);
+		testTicket.setPaymentId("dqkw131ed");
 		Agency agency = new Agency();
 		agency.setAgencyId(213);
 		agency.setAgencyName("Test Name");

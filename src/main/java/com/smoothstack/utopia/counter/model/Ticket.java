@@ -49,7 +49,7 @@ public class Ticket implements Serializable {
 	private Boolean canceled;
 	
 	@Column(name = "paymentId")
-	private Integer paymentId;
+	private String paymentId;
 
 	public Integer getTicketId() {
 		return ticketId;
@@ -91,11 +91,11 @@ public class Ticket implements Serializable {
 		this.canceled = canceled;
 	}
 
-	public Integer getPaymentId() {
+	public String getPaymentId() {
 		return paymentId;
 	}
 
-	public void setPaymentId(Integer paymentId) {
+	public void setPaymentId(String paymentId) {
 		this.paymentId = paymentId;
 	}
 
