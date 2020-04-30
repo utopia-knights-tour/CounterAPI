@@ -3,6 +3,7 @@ package com.smoothstack.utopia.counter.service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,14 @@ public class FlightService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate localDate = LocalDate.parse(departureDate, formatter);
 		return flightRepo.findFlights(originCode, destinationCode, localDate);
+	}
+	
+	public Flight readFlight(Integer flightId) throws InvalidIdException {
+		Optional<Flight> flight = flightRepo.findById(flightId);
+		if (!flight.isPresent()) {
+			throw new InvalidIdException("That ID is invalid.");
+		}
+		return flight.get();
 	}
 
 }

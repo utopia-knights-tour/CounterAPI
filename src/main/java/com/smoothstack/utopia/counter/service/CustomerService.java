@@ -1,5 +1,7 @@
 package com.smoothstack.utopia.counter.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +28,15 @@ public class CustomerService {
 		Pageable pageable = PageRequest.of(page, pagesize);
 		Page<Customer> customersPage = customerRepo.findCustomers(pageable, customerName != null? customerName: "", 
 				customerAddress != null? customerAddress: "", customerPhone != null? customerPhone: "");
-		return new PageDetails<Customer>(customersPage.getContent(), customersPage.getNumberOfElements());
+		return new PageDetails<Customer>(customersPage.getContent(), customersPage.getTotalElements());
+	}
+	
+	public Customer readCustomer(Integer customerId) throws InvalidIdException {
+		Optional<Customer> customer = customerRepo.findById(customerId);
+		if (!customer.isPresent()) {
+			throw new InvalidIdException("That ID is invalid.");
+		}
+		return customer.get();
 	}
 	
 	public void updateCustomer(Customer customer) throws InvalidIdException {

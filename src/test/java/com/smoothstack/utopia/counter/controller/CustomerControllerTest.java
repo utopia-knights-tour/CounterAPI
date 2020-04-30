@@ -43,11 +43,19 @@ public class CustomerControllerTest {
 		testCustomer.setCustomerAddress("383 Honey Creek Ave. Mentor, OH 44060");
 		testCustomer.setCustomerId(12);
 		List<Customer> customers = Collections.singletonList(testCustomer);
-		PageDetails<Customer> customersPage = new PageDetails<Customer>(customers, 1);
+		PageDetails<Customer> customersPage = new PageDetails<Customer>(customers, (long) 1);
 		when(customerService.readCustomers(any(), any(), any(), anyInt(), anyInt())).thenReturn(customersPage);
 		assertEquals(customerController.readCustomers(testCustomer.getCustomerName(), testCustomer.getCustomerAddress(),
 				testCustomer.getCustomerPhone(), 1, 10), 
 				new ResponseEntity<PageDetails<Customer>>(customersPage, HttpStatus.OK));
+	}
+	
+	@Test void testReadCustomer() throws InvalidIdException {
+		Customer testCustomer = new Customer();
+		testCustomer.setCustomerId(12);
+		when(customerService.readCustomer(12)).thenReturn(testCustomer);
+		assertEquals(customerController.readCustomer(12),
+				new ResponseEntity<Customer>(testCustomer, HttpStatus.OK));
 	}
 	
 	@Test

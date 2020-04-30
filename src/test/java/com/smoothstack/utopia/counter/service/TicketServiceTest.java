@@ -1,6 +1,7 @@
 package com.smoothstack.utopia.counter.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -14,6 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.smoothstack.utopia.counter.exception.InvalidIdException;
 import com.smoothstack.utopia.counter.model.Customer;
@@ -47,9 +51,10 @@ public class TicketServiceTest {
 		customer.setCustomerId(10);
 		testTicket.setCustomer(customer);
 		List<Ticket> tickets = Collections.singletonList(testTicket);
+		Page<Ticket> ticketsPage = new PageImpl<Ticket>(tickets, PageRequest.of(0, 10), 1);
 		when(customerRepo.existsById(customer.getCustomerId())).thenReturn(true);
-		when(ticketRepo.findTickets(eq(10), any())).thenReturn(tickets);
-		assertEquals(ticketService.readTicketsByCustomer(customer.getCustomerId(), 0, 10), tickets);
+		when(ticketRepo.findTickets(eq(10), any())).thenReturn(ticketsPage);
+		assertNotNull(ticketService.readTicketsByCustomer(customer.getCustomerId(), 0, 10));
 	}
 	
 	@Test

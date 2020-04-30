@@ -59,4 +59,12 @@ public class FlightControllerTest {
 				flight.getDepartureDate().toString()), new ResponseEntity<List<Flight>>(flights, HttpStatus.OK));
 	}
 
+	@Test
+	public void testReadFlight() throws InvalidIdException {
+		Flight flight = new Flight();
+		flight.setFlightId(10);
+		when(flightService.readFlight(10)).thenReturn(flight);
+		assertEquals(flightController.readFlight(10), 
+				new ResponseEntity<Flight>(flight, HttpStatus.OK));
+	}
 }

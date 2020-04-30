@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -66,12 +67,27 @@ public class FlightServiceTest {
 	}
 
 	@Test
-	public void testReadFlightsInvalidID() {
+	public void testReadFlightsFailure() {
 		when(airportRepo.existsById("ABC")).thenReturn(true);
 		when(airportRepo.existsById("DEF")).thenReturn(false);
 		InvalidIdException ex = assertThrows(InvalidIdException.class, () -> flightService.readFlights("ABC","DEF", "2020-04-15"));
 		assertEquals(ex.getMessage(), "That ID is invalid.");
 		assertThrows(InvalidIdException.class, () -> flightService.readFlights("DEF","ABC", "2020-04-15"));
+	}
+	
+	@Test
+	public void testReadFlightSuccess() throws InvalidIdException {
+		Flight testFlight = new Flight();
+		testFlight.setFlightId(10);
+		Optional<Flight> flight = Optional.of(testFlight);
+		when(flightRepo.findById(10)).thenReturn(flight);
+		assertEquals(flightService.readFlight(10), testFlight);
+	}
+	
+	@Test
+	public void testReadFlightFailure() {
+		when(flightRepo.findById(10)).thenReturn(Optional.empty());
+		assertThrows(InvalidIdException.class, () -> flightService.readFlight(10));
 	}
 
 }

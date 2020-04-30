@@ -27,6 +27,12 @@ public class CustomerController {
 
 	@Autowired
 	private CustomerService customerService;
+	
+	@PostMapping(path = "/customers")
+	public ResponseEntity<Void> addCustomer(@Valid @RequestBody Customer customer) {
+		customerService.saveCustomer(customer);
+		return new ResponseEntity<Void>(HttpStatus.CREATED);
+	}
 
 	@GetMapping(path = "/customers")
 	public ResponseEntity<PageDetails<Customer>> readCustomers(@RequestParam(required = false) String customerName,
@@ -35,6 +41,12 @@ public class CustomerController {
 		PageDetails<Customer> customers = customerService.readCustomers(customerName, customerAddress, customerPhone,
 				page-1, pagesize);
 		return new ResponseEntity<PageDetails<Customer>>(customers, HttpStatus.OK);
+	}
+	
+	@GetMapping(path = "/customers/{customerId}")
+	public ResponseEntity<Customer> readCustomer(@PathVariable Integer customerId) throws InvalidIdException {
+		Customer customer = customerService.readCustomer(customerId);
+		return new ResponseEntity<Customer>(customer, HttpStatus.OK);
 	}
 
 	@PutMapping(path = "/customers/{customerId}")
@@ -45,10 +57,5 @@ public class CustomerController {
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 	
-	@PostMapping(path = "/customers")
-	public ResponseEntity<Void> addCustomer(@Valid @RequestBody Customer customer) {
-		customerService.saveCustomer(customer);
-		return new ResponseEntity<Void>(HttpStatus.CREATED);
-	}
 
 }

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,5 +30,12 @@ public class FlightController {
 		List<Flight> flights = flightService.readFlights(originCode, destinationCode, departureDate);
 		return new ResponseEntity<List<Flight>>(flights, HttpStatus.OK);
 	}
+	
+	@GetMapping(path="/flights/{flightId}")
+	public ResponseEntity<Flight> readFlight(@PathVariable Integer flightId) throws InvalidIdException {
+		Flight flight = flightService.readFlight(flightId);
+		return new ResponseEntity<Flight>(flight, HttpStatus.OK);
+	}
+	
 
 }

@@ -6,9 +6,9 @@ public class PageDetails<T> {
 	
 	private List<T> pageContent;
 	
-	private Integer totalRecords;
+	private Long totalRecords;
 	
-	public PageDetails(List<T> pageContent, Integer totalRecords) {
+	public PageDetails(List<T> pageContent, Long totalRecords) {
 		this.pageContent = pageContent;
 		this.totalRecords = totalRecords;
 	}
@@ -21,11 +21,11 @@ public class PageDetails<T> {
 		this.pageContent = pageContent;
 	}
 
-	public Integer getTotalRecords() {
+	public Long getTotalRecords() {
 		return totalRecords;
 	}
 
-	public void setTotalRecords(Integer totalRecords) {
+	public void setTotalRecords(Long totalRecords) {
 		this.totalRecords = totalRecords;
 	}
 

@@ -20,6 +20,7 @@ import com.smoothstack.utopia.counter.exception.InvalidIdException;
 import com.smoothstack.utopia.counter.model.Agency;
 import com.smoothstack.utopia.counter.model.Customer;
 import com.smoothstack.utopia.counter.model.Flight;
+import com.smoothstack.utopia.counter.model.PageDetails;
 import com.smoothstack.utopia.counter.model.Ticket;
 import com.smoothstack.utopia.counter.service.TicketService;
 
@@ -53,9 +54,10 @@ public class TicketControllerTest {
 		customer.setCustomerId(10);
 		testTicket.setCustomer(customer);
 		List<Ticket> tickets = Collections.singletonList(testTicket);
-		when(ticketService.readTicketsByCustomer(eq(customer.getCustomerId()), eq(0), eq(10))).thenReturn(tickets);
+		PageDetails<Ticket> ticketsPage = new PageDetails<Ticket>(tickets, (long) 1);
+		when(ticketService.readTicketsByCustomer(eq(customer.getCustomerId()), eq(0), eq(10))).thenReturn(ticketsPage);
 		assertEquals(ticketController.readTickets(customer.getCustomerId(), 1, 10), 
-				new ResponseEntity<List<Ticket>>(tickets, HttpStatus.OK));
+				new ResponseEntity<PageDetails<Ticket>>(ticketsPage, HttpStatus.OK));
 	}
 	
 }

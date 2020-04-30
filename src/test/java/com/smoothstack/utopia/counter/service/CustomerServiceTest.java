@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.smoothstack.utopia.counter.exception.InvalidIdException;
 import com.smoothstack.utopia.counter.model.Customer;
@@ -51,9 +52,24 @@ public class CustomerServiceTest {
 		when(customerRepo.findCustomers(any(), eq("John"), eq("383"), eq("(323)"))).thenReturn(customersPage);
 		assertNotNull(customerService.readCustomers("John", "383", "(323)", 0, 10));
 	}
+	
+	@Test
+	public void testGetCustomerSuccess() throws InvalidIdException {
+		Customer testCustomer = new Customer();
+		testCustomer.setCustomerId(10);
+		Optional<Customer> customer = Optional.of(testCustomer);
+		when(customerRepo.findById(testCustomer.getCustomerId())).thenReturn(customer);
+		assertEquals(customerService.readCustomer(10), customer.get());
+	}
+	
+	@Test
+	public void testGetCustomerFailure() {
+		when(customerRepo.findById(10)).thenReturn(Optional.empty());
+		assertThrows(InvalidIdException.class, () -> customerService.readCustomer(10));
+	}
 
 	@Test
-	public void testSaveSuccess() {
+	public void testSaveCustomer() {
 		Customer testCustomer = new Customer();
 		testCustomer.setCustomerId(10);
 		when(customerRepo.existsById(10)).thenReturn(true);
