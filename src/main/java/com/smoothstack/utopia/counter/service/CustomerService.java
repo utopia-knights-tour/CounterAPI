@@ -35,12 +35,12 @@ public class CustomerService {
 	
 	public Customer readCustomer(Integer customerId) throws InvalidIdException {
 		Optional<Customer> customer = customerRepo.findById(customerId);
-		return customer.orElseThrow(() -> new InvalidIdException("That ID is invalid."));
+		return customer.orElseThrow(() -> new InvalidIdException("Invalid Customer ID."));
 	}
 	
 	public void updateCustomer(Customer customer) throws InvalidIdException {
 		if (!customerRepo.existsById(customer.getCustomerId())) {
-			throw new InvalidIdException("That ID is invalid.");
+			throw new InvalidIdException("Invalid Customer ID.");
 		}
 		customerRepo.save(customer);
 	}

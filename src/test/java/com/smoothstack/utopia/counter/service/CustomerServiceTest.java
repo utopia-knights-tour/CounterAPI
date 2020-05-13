@@ -93,7 +93,7 @@ public class CustomerServiceTest {
 		when(customerRepo.existsById(10)).thenReturn(false);
 		InvalidIdException ex = assertThrows(InvalidIdException.class,
 				() -> customerService.updateCustomer(testCustomer));
-		assertEquals(ex.getMessage(), "That ID is invalid.");
+		assertEquals(ex.getMessage(), "Invalid Customer ID.");
 	}
 
 }

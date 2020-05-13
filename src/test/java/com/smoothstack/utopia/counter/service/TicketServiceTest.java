@@ -61,7 +61,7 @@ public class TicketServiceTest {
 	public void testReadTicketsByCustomerFailure() {
 		when(customerRepo.existsById(10)).thenReturn(false);
 		InvalidIdException ex = assertThrows(InvalidIdException.class, () -> ticketService.readTicketsByCustomer(10, 0, 10));
-		assertEquals(ex.getMessage(), "That ID is invalid.");
+		assertEquals(ex.getMessage(), "Invalid Customer ID.");
 	}
 
 }

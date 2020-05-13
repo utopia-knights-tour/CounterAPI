@@ -25,7 +25,7 @@ public class TicketService {
 			throws InvalidIdException {
 		// Not found.
 		if (!customerRepo.existsById(customerId)) {
-			throw new InvalidIdException("That ID is invalid.");
+			throw new InvalidIdException("Invalid Customer ID.");
 		}
 		Pageable pageable = PageRequest.of(page, pageSize);
 		Page<Ticket> tickets = ticketRepo.findTickets(customerId, pageable);
