@@ -30,7 +30,7 @@ public class CustomerController {
 	
 	@PostMapping(path = "/customers")
 	public ResponseEntity<Void> addCustomer(@Valid @RequestBody Customer customer) {
-		customerService.saveCustomer(customer);
+		customerService.addCustomer(customer);
 		return new ResponseEntity<Void>(HttpStatus.CREATED);
 	}
 

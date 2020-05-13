@@ -33,8 +33,7 @@ public class FlightService {
 	
 	public Flight readFlight(Integer flightId) throws InvalidIdException {
 		Optional<Flight> flight = flightRepo.findById(flightId);
-		flight.orElseThrow(() -> new InvalidIdException("Invalid Airport Code."));
-		return flight.get();
+		return flight.orElseThrow(() -> new InvalidIdException("Invalid Airport Code."));
 	}
 
 }

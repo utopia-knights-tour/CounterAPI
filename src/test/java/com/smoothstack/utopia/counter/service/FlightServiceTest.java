@@ -71,7 +71,7 @@ public class FlightServiceTest {
 		when(airportRepo.existsById("ABC")).thenReturn(true);
 		when(airportRepo.existsById("DEF")).thenReturn(false);
 		InvalidIdException ex = assertThrows(InvalidIdException.class, () -> flightService.readFlights("ABC","DEF", "2020-04-15"));
-		assertEquals(ex.getMessage(), "That ID is invalid.");
+		assertEquals(ex.getMessage(), "Invalid Airport Code.");
 		assertThrows(InvalidIdException.class, () -> flightService.readFlights("DEF","ABC", "2020-04-15"));
 	}
 	
