@@ -24,7 +24,7 @@ public class FlightService {
 	
 	public List<Flight> readFlights(String originCode, String destinationCode, String departureDate) throws InvalidIdException {
 		if (!airportRepo.existsById(originCode) || !airportRepo.existsById(destinationCode)) {
-			throw new InvalidIdException("That ID is invalid.");
+			throw new InvalidIdException("Invalid Airport Code.");
 		}
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate localDate = LocalDate.parse(departureDate, formatter);
@@ -33,9 +33,7 @@ public class FlightService {
 	
 	public Flight readFlight(Integer flightId) throws InvalidIdException {
 		Optional<Flight> flight = flightRepo.findById(flightId);
-		if (!flight.isPresent()) {
-			throw new InvalidIdException("That ID is invalid.");
-		}
+		flight.orElseThrow(() -> new InvalidIdException("Invalid Airport Code."));
 		return flight.get();
 	}
 

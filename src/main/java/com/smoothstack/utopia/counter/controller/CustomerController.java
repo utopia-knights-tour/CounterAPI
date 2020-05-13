@@ -21,7 +21,7 @@ import com.smoothstack.utopia.counter.model.PageDetails;
 import com.smoothstack.utopia.counter.service.CustomerService;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "http://utopia-airlines.s3-website-us-east-1.amazonaws.com")
 @RequestMapping(path = "/counter")
 public class CustomerController {
 

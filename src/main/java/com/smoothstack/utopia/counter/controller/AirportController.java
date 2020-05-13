@@ -14,7 +14,7 @@ import com.smoothstack.utopia.counter.model.Airport;
 import com.smoothstack.utopia.counter.service.AirportService;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "http://utopia-airlines.s3-website-us-east-1.amazonaws.com")
 @RequestMapping(path = "/counter")
 public class AirportController {
 	

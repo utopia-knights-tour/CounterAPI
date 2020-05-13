@@ -33,9 +33,7 @@ public class CustomerService {
 	
 	public Customer readCustomer(Integer customerId) throws InvalidIdException {
 		Optional<Customer> customer = customerRepo.findById(customerId);
-		if (!customer.isPresent()) {
-			throw new InvalidIdException("That ID is invalid.");
-		}
+		customer.orElseThrow(() -> new InvalidIdException("That ID is invalid."));
 		return customer.get();
 	}
 	
