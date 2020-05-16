@@ -54,7 +54,7 @@ public class CustomerServiceTest {
 	}
 	
 	@Test
-	public void testGetCustomerSuccess() throws InvalidIdException {
+	public void testReadCustomerSuccess() throws InvalidIdException {
 		Customer testCustomer = new Customer();
 		testCustomer.setCustomerId(10);
 		Optional<Customer> customer = Optional.of(testCustomer);
@@ -63,17 +63,17 @@ public class CustomerServiceTest {
 	}
 	
 	@Test
-	public void testGetCustomerFailure() {
+	public void testReadCustomerFailure() {
 		when(customerRepo.findById(10)).thenReturn(Optional.empty());
 		assertThrows(InvalidIdException.class, () -> customerService.readCustomer(10));
 	}
 
 	@Test
-	public void testSaveCustomer() {
+	public void testAddCustomer() {
 		Customer testCustomer = new Customer();
 		testCustomer.setCustomerId(10);
 		when(customerRepo.existsById(10)).thenReturn(true);
-		customerService.saveCustomer(testCustomer);
+		customerService.addCustomer(testCustomer);
 		verify(customerRepo, times(1)).save(testCustomer);
 	}
 
@@ -93,7 +93,7 @@ public class CustomerServiceTest {
 		when(customerRepo.existsById(10)).thenReturn(false);
 		InvalidIdException ex = assertThrows(InvalidIdException.class,
 				() -> customerService.updateCustomer(testCustomer));
-		assertEquals(ex.getMessage(), "That ID is invalid.");
+		assertEquals(ex.getMessage(), "Invalid Customer ID.");
 	}
 
 }
