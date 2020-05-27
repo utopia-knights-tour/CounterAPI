@@ -23,7 +23,6 @@ public class TicketService {
 
 	public PageDetails<Ticket> readTicketsByCustomer(Integer customerId, Integer page, Integer pageSize)
 			throws InvalidIdException {
-		// Not found.
 		if (!customerRepo.existsById(customerId)) {
 			throw new InvalidIdException("Invalid Customer ID.");
 		}

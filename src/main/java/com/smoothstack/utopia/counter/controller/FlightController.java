@@ -3,7 +3,6 @@ package com.smoothstack.utopia.counter.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,23 +15,23 @@ import com.smoothstack.utopia.counter.model.Flight;
 import com.smoothstack.utopia.counter.service.FlightService;
 
 @RestController
-@RequestMapping(path = "/counter")
+@RequestMapping("/counter/flights")
 public class FlightController {
 	
 	@Autowired
 	private FlightService flightService;
 	
-	@GetMapping(path = "/flights")
+	@GetMapping
 	public ResponseEntity<List<Flight>> readFlights(@RequestParam String originCode, @RequestParam String destinationCode,
 			@RequestParam String departureDate) throws InvalidIdException {
 		List<Flight> flights = flightService.readFlights(originCode, destinationCode, departureDate);
-		return new ResponseEntity<List<Flight>>(flights, HttpStatus.OK);
+		return ResponseEntity.ok().body(flights);
 	}
 	
-	@GetMapping(path="/flights/{flightId}")
+	@GetMapping("{flightId}")
 	public ResponseEntity<Flight> readFlight(@PathVariable Integer flightId) throws InvalidIdException {
 		Flight flight = flightService.readFlight(flightId);
-		return new ResponseEntity<Flight>(flight, HttpStatus.OK);
+		return ResponseEntity.ok().body(flight);
 	}
 	
 

@@ -19,23 +19,23 @@ public class CustomerService {
 	@Autowired
 	private CustomerRepository customerRepo;
 	
-	public void addCustomer(Customer customer) {
-		customerRepo.save(customer);
+	public Customer addCustomer(Customer customer) {
+		return customerRepo.save(customer);
 	}
 	
 	public PageDetails<Customer> readCustomers(String customerName, String customerAddress, 
 			String customerPhone, Integer page, Integer pagesize) {
 		Pageable pageable = PageRequest.of(page, pagesize);
-		customerName = (customerName == null)? "": customerName;
-		customerAddress = (customerAddress == null)? "": customerAddress;
-		customerPhone = (customerPhone == null)? "": customerPhone;
+		customerName = Optional.ofNullable(customerName).orElse("");
+		customerAddress = Optional.ofNullable(customerAddress).orElse("");
+		customerPhone = Optional.ofNullable(customerPhone).orElse("");
 		Page<Customer> customersPage = customerRepo.findCustomers(pageable, customerName, customerAddress, customerPhone);
 		return new PageDetails<Customer>(customersPage.getContent(), customersPage.getTotalElements());
 	}
 	
 	public Customer readCustomer(Integer customerId) throws InvalidIdException {
-		Optional<Customer> customer = customerRepo.findById(customerId);
-		return customer.orElseThrow(() -> new InvalidIdException("Invalid Customer ID."));
+		return customerRepo.findById(customerId)
+				.orElseThrow(() -> new InvalidIdException("Invalid Customer ID."));
 	}
 	
 	public void updateCustomer(Customer customer) throws InvalidIdException {

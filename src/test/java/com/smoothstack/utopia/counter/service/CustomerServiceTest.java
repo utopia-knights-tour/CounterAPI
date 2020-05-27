@@ -42,12 +42,12 @@ public class CustomerServiceTest {
 
 	@Test
 	public void testReadCustomers() {
-		Customer testCustomer = new Customer();
-		testCustomer.setCustomerName("John Doe");
-		testCustomer.setCustomerPhone("(323) 312-6364");
-		testCustomer.setCustomerAddress("383 Honey Creek Ave. Mentor, OH 44060");
-		testCustomer.setCustomerId(12);
-		List<Customer> customers = Collections.singletonList(testCustomer);
+		Customer customer = new Customer();
+		customer.setCustomerName("John Doe");
+		customer.setCustomerPhone("(323) 312-6364");
+		customer.setCustomerAddress("383 Honey Creek Ave. Mentor, OH 44060");
+		customer.setCustomerId(12);
+		List<Customer> customers = Collections.singletonList(customer);
 		Page<Customer> customersPage = new PageImpl<Customer>(customers, PageRequest.of(0, 10), 1);
 		when(customerRepo.findCustomers(any(), eq("John"), eq("383"), eq("(323)"))).thenReturn(customersPage);
 		assertNotNull(customerService.readCustomers("John", "383", "(323)", 0, 10));
@@ -71,8 +71,6 @@ public class CustomerServiceTest {
 	@Test
 	public void testAddCustomer() {
 		Customer testCustomer = new Customer();
-		testCustomer.setCustomerId(10);
-		when(customerRepo.existsById(10)).thenReturn(true);
 		customerService.addCustomer(testCustomer);
 		verify(customerRepo, times(1)).save(testCustomer);
 	}

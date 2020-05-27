@@ -1,9 +1,10 @@
 package com.smoothstack.utopia.counter.controller;
 
+import java.net.URI;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.smoothstack.utopia.counter.exception.InvalidIdException;
 import com.smoothstack.utopia.counter.model.Customer;
@@ -20,39 +22,45 @@ import com.smoothstack.utopia.counter.model.PageDetails;
 import com.smoothstack.utopia.counter.service.CustomerService;
 
 @RestController
-@RequestMapping(path = "/counter")
+@RequestMapping("/counter/customers")
 public class CustomerController {
 
 	@Autowired
 	private CustomerService customerService;
 	
-	@PostMapping(path = "/customers")
+	@PostMapping
 	public ResponseEntity<Void> addCustomer(@Valid @RequestBody Customer customer) {
-		customerService.addCustomer(customer);
-		return new ResponseEntity<Void>(HttpStatus.CREATED);
+		Customer savedCustomer = customerService.addCustomer(customer);
+		// location header
+		URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedCustomer.getCustomerId())
+                .toUri();
+		return ResponseEntity.created(location).build();
 	}
 
-	@GetMapping(path = "/customers")
+	@GetMapping
 	public ResponseEntity<PageDetails<Customer>> readCustomers(@RequestParam(required = false) String customerName,
 			@RequestParam(required = false) String customerAddress, @RequestParam(required = false) String customerPhone,
 			@RequestParam Integer page, @RequestParam Integer pagesize) {
-		PageDetails<Customer> customers = customerService.readCustomers(customerName, customerAddress, customerPhone,
+		PageDetails<Customer> customersPage = customerService.readCustomers(customerName, customerAddress, customerPhone,
 				page-1, pagesize);
-		return new ResponseEntity<PageDetails<Customer>>(customers, HttpStatus.OK);
+		return ResponseEntity.ok().body(customersPage);
 	}
 	
-	@GetMapping(path = "/customers/{customerId}")
+	@GetMapping("{customerId}")
 	public ResponseEntity<Customer> readCustomer(@PathVariable Integer customerId) throws InvalidIdException {
 		Customer customer = customerService.readCustomer(customerId);
-		return new ResponseEntity<Customer>(customer, HttpStatus.OK);
+		return ResponseEntity.ok().body(customer);
 	}
 
-	@PutMapping(path = "/customers/{customerId}")
+	@PutMapping("{customerId}")
 	public ResponseEntity<Void> updateCustomer(@Valid @RequestBody Customer customer, @PathVariable Integer customerId)
 			throws InvalidIdException {
 		customer.setCustomerId(customerId);
 		customerService.updateCustomer(customer);
-		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+		return ResponseEntity.noContent().build();
 	}
 	
 
