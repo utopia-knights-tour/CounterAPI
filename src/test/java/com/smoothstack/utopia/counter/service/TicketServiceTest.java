@@ -1,6 +1,5 @@
 package com.smoothstack.utopia.counter.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -60,8 +59,7 @@ public class TicketServiceTest {
 	@Test
 	public void testReadTicketsByCustomerFailure() {
 		when(customerRepo.existsById(10)).thenReturn(false);
-		InvalidIdException ex = assertThrows(InvalidIdException.class, () -> ticketService.readTicketsByCustomer(10, 0, 10));
-		assertEquals(ex.getMessage(), "Invalid Customer ID.");
+		assertThrows(InvalidIdException.class, () -> ticketService.readTicketsByCustomer(10, 0, 10));
 	}
 
 }

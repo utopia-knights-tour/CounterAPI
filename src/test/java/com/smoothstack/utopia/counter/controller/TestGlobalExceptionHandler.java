@@ -9,14 +9,14 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.smoothstack.utopia.counter.controller.RestExceptionHandler;
+import com.smoothstack.utopia.counter.controller.GlobalExceptionHandler;
 import com.smoothstack.utopia.counter.exception.InvalidIdException;
 import com.smoothstack.utopia.counter.exception.MissingIdException;
 
-public class TestRestExceptionHandler {
+public class TestGlobalExceptionHandler {
 	
 	@InjectMocks
-	private RestExceptionHandler controllerAdvice;
+	private GlobalExceptionHandler controllerAdvice;
 	
 	@BeforeEach
 	public void setup() {
@@ -35,8 +35,8 @@ public class TestRestExceptionHandler {
 	public void testHandleBadRequestException() {
 		String testMessage = "Test Message.";
 		MissingIdException ex = new MissingIdException(testMessage);
-		assertEquals(controllerAdvice.handleBadRequestException(ex),
-				new ResponseEntity<String>(testMessage, HttpStatus.BAD_REQUEST));
+		assertEquals(controllerAdvice.handleBadRequest(ex),
+				ResponseEntity.badRequest().body(testMessage));
 	}
 	
 }

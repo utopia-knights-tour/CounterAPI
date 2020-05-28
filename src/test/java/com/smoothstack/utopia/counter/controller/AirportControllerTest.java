@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.smoothstack.utopia.counter.controller.AirportController;
@@ -39,6 +38,6 @@ public class AirportControllerTest {
 		airport.setAirportName("Los Angeles International Airport");
 		List<Airport> airports = Collections.singletonList(airport);
 		when(airportService.readAirports()).thenReturn(airports);
-		assertEquals(airportController.readAirports(), new ResponseEntity<List<Airport>>(airports, HttpStatus.OK));
+		assertEquals(airportController.readAirports(), ResponseEntity.ok().body(airports));
 	}
 }

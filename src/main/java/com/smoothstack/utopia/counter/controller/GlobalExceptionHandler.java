@@ -19,8 +19,8 @@ import com.smoothstack.utopia.counter.exception.InvalidIdException;
 import com.smoothstack.utopia.counter.exception.MissingIdException;
 
 @ControllerAdvice
-public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -31,18 +31,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		ex.getBindingResult().getGlobalErrors().stream().forEach(error -> {
 			errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
 		});
-		return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
+		return ResponseEntity.badRequest().body(errors);
 	}
 
 	@ExceptionHandler(InvalidIdException.class)
-	public ResponseEntity<String> handleInvalidIdException(InvalidIdException ex) {
+	protected ResponseEntity<String> handleInvalidIdException(InvalidIdException ex) {
 		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler({ MissingIdException.class, RollbackException.class,
 			ConstraintViolationException.class })
-	public ResponseEntity<String> handleBadRequestException(Exception ex) {
-		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+	protected ResponseEntity<String> handleBadRequest(Exception ex) {
+		return ResponseEntity.badRequest().body(ex.getMessage());
 	}
 
 }

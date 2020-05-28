@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.smoothstack.utopia.counter.controller.FlightController;
@@ -56,7 +55,7 @@ public class FlightControllerTest {
 		when(flightService.readFlights(eq(source.getAirportCode()), eq(destination.getAirportCode()),
 				eq(flight.getDepartureDate().toString()))).thenReturn(flights);
 		assertEquals(flightController.readFlights(source.getAirportCode(), destination.getAirportCode(), 
-				flight.getDepartureDate().toString()), new ResponseEntity<List<Flight>>(flights, HttpStatus.OK));
+				flight.getDepartureDate().toString()), ResponseEntity.ok().body(flights));
 	}
 
 	@Test
@@ -65,6 +64,6 @@ public class FlightControllerTest {
 		flight.setFlightId(10);
 		when(flightService.readFlight(10)).thenReturn(flight);
 		assertEquals(flightController.readFlight(10), 
-				new ResponseEntity<Flight>(flight, HttpStatus.OK));
+				ResponseEntity.ok().body(flight));
 	}
 }
